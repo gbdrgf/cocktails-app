@@ -1,11 +1,22 @@
+html,
 body {
   margin: 0;
   padding: 0;
+  min-width: 360px;
+  width: 100%;
   box-sizing: border-box;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 #app {
-  height: 100vh;
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
 }

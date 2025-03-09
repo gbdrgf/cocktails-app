@@ -2,7 +2,7 @@
   <div class="cocktail-card">
     <div class="cocktail-content">
       <div class="cocktail-info">
-        <h2 class="cocktail-name">{{ cocktail.strDrink }}</h2>
+        <h2>{{ cocktail.strDrink }}</h2>
         <p><strong>Категория:</strong> {{ cocktail.strCategory }}</p>
         <p><strong>Тип:</strong> {{ cocktail.strAlcoholic }}</p>
         <p><strong>Подача:</strong> {{ cocktail.strGlass }}</p>
