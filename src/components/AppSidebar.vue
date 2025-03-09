@@ -1,24 +1,23 @@
 <template>
   <aside class="sidebar">
     <nav>
-      <router-link
-        v-for="cocktail in cocktails"
+      <button
+        v-for="cocktail in store.getCocktailList"
         :key="cocktail"
-        :to="'/' + cocktail"
         class="nav-link"
-        active-class="active-link"
+        :class="{ active: store.selectedCocktail === cocktail }"
+        @click="store.setSelectedCocktail(cocktail)"
       >
         {{ cocktail }}
-      </router-link>
+      </button>
     </nav>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { Cocktail } from '@/types/cocktails'
+import { useCocktailsStore } from '@/store/cocktails'
 
-const cocktails = ref<Record<string, Cocktail>>({})
+const store = useCocktailsStore()
 </script>
 
 <style scoped>

@@ -1,13 +1,23 @@
 <template>
   <div>
-    <h1>Cocktails Page</h1>
+    <h1>{{ store.selectedCocktail }}</h1>
+    <p v-if="store.isLoading">Loading...</p>
+    <p v-if="store.error" class="error-message">{{ store.error }}</p>
+
+    <ul v-if="store.getSelectedCocktailData.length">
+      <li v-for="drink in store.getSelectedCocktailData" :key="drink.idDrink">
+        {{ drink.strDrink }}
+      </li>
+    </ul>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script setup lang="ts">
+import { useCocktailsStore } from '@/store/cocktails'
 
-export default defineComponent({
-  name: 'CocktailsPage',
-})
+const store = useCocktailsStore()
 </script>
+
+<style scoped>
+@import '@/assets/styles/cocktails.scss';
+</style>
