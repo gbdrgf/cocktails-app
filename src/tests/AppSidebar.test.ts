@@ -1,33 +1,55 @@
-import { describe, it, expect } from 'vitest'
-import { mount } from '@vue/test-utils'
-import Sidebar from '@/components/AppSidebar.vue'
-import { createTestingPinia } from '@pinia/testing'
-import { useCocktailsStore } from '@/store/cocktails'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { setActivePinia, createPinia } from 'pinia'
+import { mount, flushPromises } from '@vue/test-utils'
+import AppLayout from '@/components/AppLayout.vue'
+import { createRouter, createWebHistory } from 'vue-router'
 
-describe('Sidebar.vue', () => {
-  it('отображает список коктейлей', () => {
-    const wrapper = mount(Sidebar, {
-      global: {
-        plugins: [createTestingPinia()],
-      },
+vi.mock('@/config', () => ({
+  COCKTAIL_CODES: ['margarita', 'mojito', 'a1', 'kir'],
+}))
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', redirect: '/margarita' },
+    { path: '/:cocktailCode', component: { template: '<div />' } },
+  ],
+})
+
+beforeEach(async () => {
+  setActivePinia(createPinia())
+
+  await router.push('/margarita')
+  await router.isReady()
+})
+
+describe('Sidebar.vue внутри AppLayout', () => {
+  it('отображает список коктейлей', async () => {
+    const wrapper = mount(AppLayout, {
+      global: { plugins: [router] },
     })
 
-    expect(wrapper.findAll('.nav-link')).toHaveLength(4) // margarita, mojito, a1, kir
+    await flushPromises()
+
+    const links = wrapper.findAll('.sidebar__link')
+    expect(links).toHaveLength(4)
   })
 
-  it('меняет активный коктейль при клике', async () => {
-    const pinia = createTestingPinia({ stubActions: false })
-    const wrapper = mount(Sidebar, {
-      global: {
-        plugins: [pinia],
-      },
+  it('меняет активный класс при клике на новый пункт', async () => {
+    const wrapper = mount(AppLayout, {
+      global: { plugins: [router] },
     })
 
-    const store = useCocktailsStore()
-    const buttons = wrapper.findAll('.nav-link')
+    await flushPromises()
 
-    await buttons[1].trigger('click') // Кликаем на mojito
-    expect(store.activeCocktailCode).toBe('mojito')
-    expect(buttons[1].classes()).toContain('active')
+    const links = wrapper.findAll('.sidebar__link')
+
+    expect(links[0].classes()).toContain('sidebar__link--active')
+
+    await links[1].trigger('click')
+    await flushPromises()
+
+    expect(links[0].classes()).not.toContain('sidebar__link--active')
+    expect(links[1].classes()).toContain('sidebar__link--active')
   })
 })

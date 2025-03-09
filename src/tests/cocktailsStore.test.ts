@@ -5,6 +5,7 @@ import { fetchCocktailsByCode } from '@/services/api'
 
 beforeEach(() => {
   setActivePinia(createPinia())
+  vi.clearAllMocks()
 })
 
 vi.mock('@/services/api', () => ({
@@ -14,16 +15,9 @@ vi.mock('@/services/api', () => ({
 describe('Cocktails Store', () => {
   it('должен иметь начальное состояние', () => {
     const store = useCocktailsStore()
-    expect(store.activeCocktailCode).toBe('margarita')
     expect(store.cocktailsCache).toEqual({})
     expect(store.isLoading).toBe(false)
     expect(store.error).toBeNull()
-  })
-
-  it('должен изменять активный коктейль', () => {
-    const store = useCocktailsStore()
-    store.setActiveCocktail('mojito')
-    expect(store.activeCocktailCode).toBe('mojito')
   })
 
   it('должен загружать данные коктейля', async () => {
@@ -34,11 +28,25 @@ describe('Cocktails Store', () => {
 
     await store.loadCocktailData('mojito')
 
+    expect(store.cocktailsCache).toHaveProperty('mojito')
     expect(store.cocktailsCache.mojito).toEqual([
       { idDrink: '11000', strDrink: 'Mojito' },
     ])
     expect(store.isLoading).toBe(false)
     expect(store.error).toBeNull()
+  })
+
+  it('не должен повторно загружать данные, если они уже есть', async () => {
+    const store = useCocktailsStore()
+
+    store.cocktailsCache = {
+      ...store.cocktailsCache,
+      mojito: [{ idDrink: '11000', strDrink: 'Mojito' }],
+    }
+
+    await store.loadCocktailData('mojito')
+
+    expect(fetchCocktailsByCode).not.toHaveBeenCalled()
   })
 
   it('должен обрабатывать ошибку при загрузке', async () => {
@@ -47,7 +55,26 @@ describe('Cocktails Store', () => {
 
     await store.loadCocktailData('mojito')
 
-    expect(store.error).toEqual(expect.stringContaining('Ошибка загрузки'))
+    expect(store.error).toContain('Ошибка загрузки')
     expect(store.isLoading).toBe(false)
+  })
+
+  it('должен правильно определять наличие данных', async () => {
+    const store = useCocktailsStore()
+
+    expect(store.hasCocktailData('mojito').value).toBe(false)
+
+    store.cocktailsCache = {
+      ...store.cocktailsCache,
+      mojito: [{ idDrink: '11000', strDrink: 'Mojito' }],
+    }
+
+    expect(store.hasCocktailData('mojito').value).toBe(true)
+  })
+
+  it('должен возвращать пустой массив, если коктейля нет', () => {
+    const store = useCocktailsStore()
+
+    expect(store.getCocktailVariants('mojito').value).toEqual([])
   })
 })

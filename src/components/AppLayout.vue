@@ -1,8 +1,8 @@
 <template>
-  <div class="layout">
-    <AppSidebar />
-    <main class="content">
-      <router-view />
+  <div class="app-layout">
+    <AppSidebar class="app-layout__sidebar" />
+    <main class="app-layout__content">
+      <router-view :key="$route.fullPath" />
     </main>
   </div>
 </template>

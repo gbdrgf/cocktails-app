@@ -1,28 +1,30 @@
 <template>
   <div class="cocktail-card">
-    <div class="cocktail-content">
-      <div class="cocktail-info">
-        <h2>{{ cocktail.strDrink }}</h2>
+    <h2 class="cocktail-card__title">{{ cocktail.strDrink }}</h2>
+    <div class="cocktail-card__content">
+      <div class="cocktail-card__info">
         <p><strong>Категория:</strong> {{ cocktail.strCategory }}</p>
         <p><strong>Тип:</strong> {{ cocktail.strAlcoholic }}</p>
         <p><strong>Подача:</strong> {{ cocktail.strGlass }}</p>
-        <h3>Ингредиенты:</h3>
-        <ul>
+        <p><strong>Список ингредиентов:</strong></p>
+        <ul class="cocktail-card__ingredients">
           <li v-for="(ingredient, index) in ingredients" :key="index">
             {{ ingredient }}
           </li>
         </ul>
-        <h3>Рецепт:</h3>
-        <p>{{ cocktail.strInstructions }}</p>
       </div>
-      <div class="cocktail-image-container">
+      <div class="cocktail-card__image-container">
         <img
           :src="cocktail.strDrinkThumb"
           :alt="cocktail.strDrink"
           loading="lazy"
-          class="cocktail-image"
+          class="cocktail-card__image"
         />
       </div>
+    </div>
+    <div class="cocktail-card__instructions">
+      <h3>Рецепт</h3>
+      <p>{{ cocktail.strInstructions }}</p>
     </div>
   </div>
 </template>

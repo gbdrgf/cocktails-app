@@ -1,9 +1,12 @@
-.cocktail-title {
-  margin-top: 0;
-  text-transform: capitalize;
-}
+.cocktail-page {
+  &__title {
+    margin: 0 auto 20px;
+    text-align: center;
+    text-transform: capitalize;
+  }
 
-.error {
-  color: red;
-  font-weight: bold;
+  &__error {
+    color: red;
+    font-weight: bold;
+  }
 }

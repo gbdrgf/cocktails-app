@@ -2,6 +2,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 import AppLayout from '@/components/AppLayout.vue'
 import CocktailsPage from '@/pages/CocktailsPage.vue'
 import NotFoundPage from '@/pages/NotFoundPage.vue'
+import { COCKTAIL_CODES } from '@/config'
+
+function validateCocktail(
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  next: NavigationGuardNext,
+) {
+  if (COCKTAIL_CODES.includes(to.params.cocktailCode as string)) {
+    next()
+  } else {
+    next({ name: 'NotFound' })
+  }
+}
 
 const routes = [
   {
@@ -10,34 +23,21 @@ const routes = [
     children: [
       {
         path: '',
-        redirect: 'margarita',
+        redirect: `/${COCKTAIL_CODES[0]}`,
       },
       {
-        path: 'margarita',
-        name: 'margarita',
+        path: ':cocktailCode',
+        name: 'Cocktail',
         component: CocktailsPage,
+        props: (route) => ({ cocktailCode: route.params.cocktailCode }),
+        beforeEnter: validateCocktail,
       },
       {
-        path: 'mojito',
-        name: 'mojito',
-        component: CocktailsPage,
-      },
-      {
-        path: 'a1',
-        name: 'a1',
-        component: CocktailsPage,
-      },
-      {
-        path: 'kir',
-        name: 'kir',
-        component: CocktailsPage,
+        path: ':pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFoundPage,
       },
     ],
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: NotFoundPage,
   },
 ]
 

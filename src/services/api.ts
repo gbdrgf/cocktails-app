@@ -1,7 +1,6 @@
 import axios from 'axios'
 import type { Cocktail } from '@/types/cocktail'
-
-const API_URL = 'https://www.thecocktaildb.com/api/json/v1/1/search.php?s='
+import { API_URL } from '../config'
 
 export async function fetchCocktailsByCode(code: string): Promise<Cocktail[]> {
   if (!code) {
@@ -9,13 +8,11 @@ export async function fetchCocktailsByCode(code: string): Promise<Cocktail[]> {
   }
 
   try {
-    const response = await axios.get<{ drinks: Cocktail[] | null }>(
+    const { data } = await axios.get<{ drinks: Cocktail[] | null }>(
       `${API_URL}${encodeURIComponent(code)}`,
     )
-
-    return response.data.drinks ?? []
-  } catch (error) {
-    console.error('Error fetching cocktails:', error)
+    return data.drinks ?? []
+  } catch {
     throw new Error('API request failed')
   }
 }

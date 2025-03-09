@@ -1,78 +1,92 @@
-.cocktail {
-  &-card {
-    width: 100%;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 15px;
-    background: #f9f9f9;
-    margin-bottom: 20px;
+.cocktail-card {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #f9f9f9;
+  box-sizing: border-box;
+
+  &__title {
+    font-size: 22px;
+    margin: 0 auto 10px;
+    text-align: center;
   }
 
-  &-content {
+  &__content {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
     gap: 20px;
   }
 
-  &-info {
+  &__info {
     flex: 1;
-    order: 1;
-
-    h2 {
-      font-size: 22px;
-      margin: 10px 10px 0 0;
-    }
 
     p {
       font-size: 16px;
       margin: 5px 0;
     }
+  }
 
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+  &__ingredients {
+    list-style: square;
+    padding: 0 15px 10px;
+    margin: 0;
 
-      li {
-        font-size: 14px;
-        margin: 2px 0;
-      }
+    li {
+      font-size: 14px;
+      margin: 2px 0;
     }
   }
 
-  &-image {
+  &__image-container {
+    flex-shrink: 0;
+    max-width: 30%;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__image {
     max-width: 100%;
     max-height: 100%;
     border-radius: 8px;
+  }
 
-    &-container {
-      order: 2;
-      flex-shrink: 0;
-      max-width: 30%;
-      margin: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+  &__instructions {
+    width: 100%;
+
+    h3 {
+      margin: 0;
+      text-align: center;
+    }
+
+    p {
+      margin: 10px 0 0;
+      font-size: 15px;
+      line-height: 1.4;
+      white-space: pre-line;
     }
   }
 
   @media (max-width: 768px) {
-    &-content {
+    &__content {
       flex-direction: column;
       align-items: center;
     }
 
-    &-image-container {
+    &__info {
       order: 2;
       width: 100%;
-      max-width: 200px;
     }
 
-    &-info {
+    &__image-container {
       order: 1;
-      text-align: center;
+      width: 100%;
+      max-width: 200px;
+      margin-top: 15px;
     }
   }
 }
