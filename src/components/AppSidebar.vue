@@ -2,11 +2,11 @@
   <aside class="sidebar">
     <nav>
       <button
-        v-for="cocktail in store.getCocktailList"
+        v-for="cocktail in COCKTAIL_CODES"
         :key="cocktail"
         class="nav-link"
-        :class="{ active: store.selectedCocktail === cocktail }"
-        @click="store.setSelectedCocktail(cocktail)"
+        :class="{ active: cocktailsStore.activeCocktailCode === cocktail }"
+        @click="cocktailsStore.setActiveCocktail(cocktail)"
       >
         {{ cocktail }}
       </button>
@@ -16,8 +16,9 @@
 
 <script setup lang="ts">
 import { useCocktailsStore } from '@/store/cocktails'
+import { COCKTAIL_CODES } from '@/config'
 
-const store = useCocktailsStore()
+const cocktailsStore = useCocktailsStore()
 </script>
 
 <style scoped>

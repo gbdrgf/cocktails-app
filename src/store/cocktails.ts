@@ -2,21 +2,25 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import type { Cocktail } from '@/types/cocktail'
 import { fetchCocktailsByCode } from '@/services/api'
+import { COCKTAIL_CODES } from '@/config'
 
 export const useCocktailsStore = defineStore('cocktails', () => {
-  const cocktails = ref<Record<string, Cocktail[]>>({})
+  const cocktailsCache = ref<Record<string, Cocktail[]>>({})
+
+  const activeCocktailCode = ref<string>(COCKTAIL_CODES[0])
+
   const error = ref<string | null>(null)
   const isLoading = ref<boolean>(false)
-  const selectedCocktail = ref<string>('margarita')
 
-  async function fetchCocktailData(code: string) {
-    if (cocktails.value[code]) return
+  async function loadCocktailData(cocktailCode: string) {
+    if (cocktailsCache.value[cocktailCode]) return // Если уже загружали, не дублируем запрос
 
     isLoading.value = true
     error.value = null
 
     try {
-      cocktails.value[code] = await fetchCocktailsByCode(code)
+      cocktailsCache.value[cocktailCode] =
+        await fetchCocktailsByCode(cocktailCode)
     } catch (err) {
       error.value = `Failed to load cocktail data: ${err}`
     } finally {
@@ -24,26 +28,32 @@ export const useCocktailsStore = defineStore('cocktails', () => {
     }
   }
 
-  async function setSelectedCocktail(code: string) {
-    if (selectedCocktail.value !== code) {
-      selectedCocktail.value = code
-      await fetchCocktailData(code)
+  async function setActiveCocktail(cocktailCode: string) {
+    if (
+      COCKTAIL_CODES.includes(cocktailCode) &&
+      activeCocktailCode.value !== cocktailCode
+    ) {
+      activeCocktailCode.value = cocktailCode
+      await loadCocktailData(cocktailCode)
     }
   }
 
-  const getSelectedCocktailData = computed(
-    () => cocktails.value[selectedCocktail.value] || [],
+  const activeCocktailVariants = computed(
+    () => cocktailsCache.value[activeCocktailCode.value] || [],
   )
 
-  const getCocktailList = computed(() => ['margarita', 'mojito', 'a1', 'kir'])
+  const hasActiveCocktailData = computed(
+    () => activeCocktailVariants.value.length > 0,
+  )
 
   return {
-    cocktails,
+    cocktailsCache,
+    activeCocktailCode,
     error,
     isLoading,
-    selectedCocktail,
-    getSelectedCocktailData,
-    getCocktailList,
-    setSelectedCocktail,
+    loadCocktailData,
+    setActiveCocktail,
+    activeCocktailVariants,
+    hasActiveCocktailData,
   }
 })

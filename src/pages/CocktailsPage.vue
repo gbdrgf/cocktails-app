@@ -1,21 +1,36 @@
 <template>
-  <div>
-    <h1>{{ store.selectedCocktail }}</h1>
-    <p v-if="store.isLoading">Loading...</p>
-    <p v-if="store.error" class="error-message">{{ store.error }}</p>
+  <div class="cocktail-page">
+    <h1 class="cocktail-title">{{ cocktailsStore.activeCocktailCode }}</h1>
 
-    <ul v-if="store.getSelectedCocktailData.length">
-      <li v-for="drink in store.getSelectedCocktailData" :key="drink.idDrink">
-        {{ drink.strDrink }}
-      </li>
-    </ul>
+    <p v-if="cocktailsStore.isLoading" class="loading">Загрузка...</p>
+    <p v-if="cocktailsStore.error" class="error">{{ cocktailsStore.error }}</p>
+    <p
+      v-if="!cocktailsStore.hasActiveCocktailData && !cocktailsStore.isLoading"
+      class="no-data"
+    >
+      Нет данных для этого коктейля.
+    </p>
+
+    <div v-if="cocktailsStore.hasActiveCocktailData" class="cocktail-list">
+      <CocktailCard
+        v-for="cocktail in cocktailsStore.activeCocktailVariants"
+        :key="cocktail.idDrink"
+        :cocktail="cocktail"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useCocktailsStore } from '@/store/cocktails'
+import CocktailCard from '@/components/CocktailCard.vue'
+import { onMounted } from 'vue'
 
-const store = useCocktailsStore()
+const cocktailsStore = useCocktailsStore()
+
+onMounted(async () => {
+  await cocktailsStore.loadCocktailData(cocktailsStore.activeCocktailCode)
+})
 </script>
 
 <style scoped>
