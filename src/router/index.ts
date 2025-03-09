@@ -1,27 +1,49 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import CocktailsPage from "../pages/CocktailsPage.vue";
-import NotFoundPage from "../pages/NotFoundPage.vue";
+import AppLayout from '@/components/AppLayout.vue'
+import CocktailsPage from '@/pages/CocktailsPage.vue'
+import NotFoundPage from '@/pages/NotFoundPage.vue'
 
 const routes = [
-    {
-        path: '/',
-        redirect: '/margarita',
-    },
-    {
-        path: '/:cocktailCode(margarita|mojito|a1|kir)',
-        name: 'cocktail',
+  {
+    path: '/',
+    component: AppLayout,
+    children: [
+      {
+        path: '',
+        redirect: 'margarita',
+      },
+      {
+        path: 'margarita',
+        name: 'margarita',
         component: CocktailsPage,
-    },
-    {
-        path: '/:pathMatch(.*)*',
-        name: 'NotFound',
-        component: NotFoundPage,
-    },
+      },
+      {
+        path: 'mojito',
+        name: 'mojito',
+        component: CocktailsPage,
+      },
+      {
+        path: 'a1',
+        name: 'a1',
+        component: CocktailsPage,
+      },
+      {
+        path: 'kir',
+        name: 'kir',
+        component: CocktailsPage,
+      },
+    ],
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundPage,
+  },
 ]
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes,
 })
 
 export default router
